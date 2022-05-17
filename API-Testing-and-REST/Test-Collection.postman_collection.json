@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "18924290-8123-4be9-91c3-2198b5438ad0",
+		"name": "Test-Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get issues by Repo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP status is 200 OK\", () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type” is “application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).equals(\"application/json; charset=utf-8\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"HTTP body holds a JSON array of issues\", () => {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(Array.isArray(json)).equals(true);\r",
+							"\r",
+							"    for(let item of json){\r",
+							"        pm.expect(typeof(item)).equals(\"object\");\r",
+							"        pm.expect(Number.isInteger(item.id)).equals(true);\r",
+							"        pm.expect(typeof(item.title)).equals(\"string\");\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get issue #1 by Repo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"HTTP status is 200 OK\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"HTTP body holds a JSON object\", () => {\r",
+							"    pm.expect(typeof(body)).equals(\"object\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"HTTP body holds id and number properties\", () => {\r",
+							"   pm.expect(Number.isInteger(body.id)).equals(true);\r",
+							"    pm.expect(typeof(body.title)).equals(\"string\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"HTTP status code: 404 Not Found\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create an issue by Repo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP status code: 201 Created\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"HTTP body holds id and number properties\", () => {\r",
+							"    const requestIssue = JSON.parse(pm.request.body);\r",
+							"    const responseIssue = pm.response.json();\r",
+							"\r",
+							"    pm.expect(typeof(responseIssue)).equals(\"object\");\r",
+							"    pm.expect(Number.isInteger(responseIssue.id)).equals(true);\r",
+							"    pm.expect(requestIssue.title).equals(responseIssue.title);\r",
+							"    pm.expect(requestIssue.body).equals(responseIssue.body);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\" : \"Missing [Submit] button\",\r\n    \"body\": \"I'm having a problem with this.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit issue #3098 by Repo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP status code: 201 Created\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"HTTP body holds id and number properties\", () => {\r",
+							"    const requestBody = JSON.parse(pm.request.body);\r",
+							"    const body = pm.response.json();\r",
+							"\r",
+							"    pm.expect(typeof(body)).equals(\"object\");\r",
+							"    pm.expect(Number.isInteger(body.id)).equals(true);\r",
+							"    pm.expect(Number.isInteger(body.number)).equals(true);\r",
+							"    pm.expect(requestBody.title).equals(body.title);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\" : \"PATCHED\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/3719",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"3719"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Close issue #3098 by Repo",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"state\": \"closed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/3098",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"3098"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a comment for Issue",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"body\" : \"This is a comment\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/3099/comments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"3099",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get comments for Issue",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/6/comments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"6",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get comment by Id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/comments/762538948 ",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"comments",
+						"762538948 "
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit comment by Id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"body\" : \"Edited Comment\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/comments/1125104277",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"comments",
+						"1125104277"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete comment by Id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "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",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Shtereva",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/testnakov/test-nakov-repo/issues/comments/1125119097",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"testnakov",
+						"test-nakov-repo",
+						"issues",
+						"comments",
+						"1125119097"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "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",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "Shtereva",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
